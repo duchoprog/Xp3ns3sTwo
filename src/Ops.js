@@ -20,7 +20,7 @@ class Ops extends Component {
       long: 21,
       cta: "default",
       motivo: "Super",
-      inputColor: "black",
+      detalle: "",
       modalVisible: false
     };
   }
@@ -31,12 +31,13 @@ class Ops extends Component {
     const position = `https://www.google.com/maps/place/ ${this.state.lat},${
       this.state.long
     }`;
-    const text = `Guardado:
-    monto:${this.state.monto}
-    cuenta: ${this.state.cta}
-    motivo: ${this.state.motivo}
-    fecha: ${this.state.fecha}
-    lugar: ${position}
+    const text = `Guardando:
+    *Monto:${this.state.monto}
+    *Cuenta: ${this.state.cta}
+    *Motivo: ${this.state.motivo}
+    *Fecha: ${this.state.fecha}
+    *Lugar: ${position}
+    *Detalle:${this.state.detalle}
     `;
 
     updateCta = cta => {
@@ -78,17 +79,11 @@ class Ops extends Component {
             style={{
               flex: 1,
               fontSize: 25,
-              backgroundColor: "white",
-              color: this.state.inputColor
+              backgroundColor: "white"
             }}
             value={montoString}
             onChangeText={text => {
-              if (parseInt(text) > 0) {
-                const textNum = parseInt(text);
-                this.setState({ monto: textNum, inputColor: "black" });
-              } else {
-                this.setState({ monto: 0, inputColor: "white" });
-              }
+              this.setState({ monto: text });
             }}
           />
         </View>
@@ -119,7 +114,21 @@ class Ops extends Component {
             <Picker.Item label="Super" value="Super" />
           </Picker>
         </View>
+        <View style={{ flexDirection: "row" }}>
+          <Text style={styles.montoStyle}>Detalle:</Text>
 
+          <TextInput
+            style={{
+              flex: 1,
+              fontSize: 25,
+              backgroundColor: "white"
+            }}
+            value={this.state.detalle}
+            onChangeText={text => {
+              this.setState({ detalle: text });
+            }}
+          />
+        </View>
         <Button
           style={styles.btStyle}
           title="guarda"
@@ -129,7 +138,7 @@ class Ops extends Component {
 
             this.findCoordinates;
             monto = 0;
-            this.setState({ monto: 0, fecha: fecha, modalVisible: true });
+            this.setState({ fecha: fecha, modalVisible: true });
           }}
         />
 
@@ -143,22 +152,35 @@ class Ops extends Component {
         >
           <View style={{ marginTop: 22 }}>
             <View>
-              <Text>{text}</Text>
+              <Text style={{ fontSize: 20 }}>{text}</Text>
+              <View
+                style={{
+                  backgroundColor: "lightgreen",
+                  padding: 10,
+                  flexDirection: "row"
+                }}
+              >
+                <TouchableHighlight
+                  style={styles.modBtStyle}
+                  onPress={() => {
+                    this.setState({
+                      modalVisible: false,
+                      monto: parseInt(this.state.monto)
+                    });
+                  }}
+                >
+                  <Text style={{ alignSelf: "center" }}>Dale</Text>
+                </TouchableHighlight>
 
-              <TouchableHighlight
-                onPress={() => {
-                  this.setState({ modalVisible: false });
-                }}
-              >
-                <Text>OK</Text>
-              </TouchableHighlight>
-              <TouchableHighlight
-                onPress={() => {
-                  this.setState({ modalVisible: false });
-                }}
-              >
-                <Text>No!</Text>
-              </TouchableHighlight>
+                <TouchableHighlight
+                  style={styles.modBtStyle}
+                  onPress={() => {
+                    this.setState({ modalVisible: false });
+                  }}
+                >
+                  <Text style={{ alignSelf: "center" }}>NO!</Text>
+                </TouchableHighlight>
+              </View>
             </View>
           </View>
         </Modal>
@@ -191,6 +213,12 @@ const styles = {
     borderColor: "black",
     color: "black",
     padding: 5
+  },
+  modBtStyle: {
+    flex: 1,
+    backgroundColor: "lightblue",
+    margin: 5,
+    padding: 10
   }
 };
 
