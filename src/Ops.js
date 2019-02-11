@@ -6,7 +6,8 @@ import {
   Picker,
   TextInput,
   Modal,
-  TouchableHighlight
+  TouchableHighlight,
+  KeyboardAvoidingView
 } from "react-native";
 
 class Ops extends Component {
@@ -62,12 +63,22 @@ class Ops extends Component {
     };
 
     return (
-      <View>
+      <KeyboardAvoidingView behavior="padding">
         <Button
           style={styles.btStyle}
           title=" sumar 1000"
           onPress={() => {
-            nuevoMonto = this.state.monto + 1000;
+            nuevoMonto = (parseInt(this.state.monto) + 1000).toString();
+
+            this.setState({ monto: nuevoMonto }, () => {});
+          }}
+        />
+        <View style={{ topBorder: 2, height: 2 }} />
+        <Button
+          style={styles.btStyle}
+          title=" sumar 100"
+          onPress={() => {
+            nuevoMonto = (parseInt(this.state.monto) + 100).toString();
 
             this.setState({ monto: nuevoMonto }, () => {});
           }}
@@ -184,7 +195,8 @@ class Ops extends Component {
             </View>
           </View>
         </Modal>
-      </View>
+        <View style={{ height: 60 }} />
+      </KeyboardAvoidingView>
     );
   }
 }
