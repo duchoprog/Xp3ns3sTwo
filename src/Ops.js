@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import firebase from "firebase";
 import {
   View,
   Text,
@@ -6,6 +7,7 @@ import {
   Picker,
   TextInput,
   Modal,
+  ScrollView,
   TouchableHighlight,
   KeyboardAvoidingView
 } from "react-native";
@@ -15,17 +17,30 @@ class Ops extends Component {
     super(props);
     this.state = {
       monto: 0,
-      cta: "default",
+      cta: "",
       fecha: "",
       lat: 12,
       long: 21,
-      cta: "default",
       motivo: "Super",
       detalle: "",
-      modalVisible: false
+      modalVisible: false,
+      posi: ""
     };
   }
 
+  guardarOp() {
+    this.setState({
+      modalVisible: false,
+      monto: parseInt(this.state.monto)
+    });
+
+    const { monto, cta, fecha, motivo, detalle, posi } = this.state;
+    console.warn(monto, cta, fecha, motivo);
+    firebase
+      .database()
+      .ref("/Users/ops")
+      .push({ monto, cta, fecha, motivo, detalle, posi });
+  }
   render() {
     const ahora = new Date();
     const montoString = `${this.state.monto.toString()}`;
@@ -56,6 +71,7 @@ class Ops extends Component {
           var position = `https://www.google.com/maps/place/ ${
             this.state.lat
           },${this.state.long}`;
+          this.setState({ posi: position });
         },
         error => Alert.alert(error.message),
         { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
@@ -63,140 +79,138 @@ class Ops extends Component {
     };
 
     return (
-      <KeyboardAvoidingView behavior="padding">
-        <Button
-          style={styles.btStyle}
-          title=" sumar 1000"
-          onPress={() => {
-            nuevoMonto = (parseInt(this.state.monto) + 1000).toString();
+      <ScrollView style={{ flex: 1 }} behavior="padding" enabled>
+        <View style={{ flex: 1 }}>
+          <Button
+            style={styles.btStyle}
+            title=" sumar 1402"
+            onPress={() => {
+              nuevoMonto = (parseInt(this.state.monto) + 1000).toString();
 
-            this.setState({ monto: nuevoMonto }, () => {});
-          }}
-        />
-        <View style={{ topBorder: 2, height: 2 }} />
-        <Button
-          style={styles.btStyle}
-          title=" sumar 100"
-          onPress={() => {
-            nuevoMonto = (parseInt(this.state.monto) + 100).toString();
-
-            this.setState({ monto: nuevoMonto }, () => {});
-          }}
-        />
-        <View style={{ flexDirection: "row" }}>
-          <Text style={styles.montoStyle}>$</Text>
-
-          <TextInput
-            style={{
-              flex: 1,
-              fontSize: 25,
-              backgroundColor: "white"
-            }}
-            value={montoString}
-            onChangeText={text => {
-              this.setState({ monto: text });
+              this.setState({ monto: nuevoMonto }, () => {});
             }}
           />
-        </View>
-        {/* <Text>{text}</Text> */}
+          <View style={{ topBorder: 2, height: 2 }} />
+          <Button
+            style={styles.btStyle}
+            title=" sumar 100"
+            onPress={() => {
+              nuevoMonto = (parseInt(this.state.monto) + 100).toString();
 
-        <View style={styles.pickerViewStyle}>
-          <Text style={styles.text}>Cuenta origen</Text>
-          <Picker
-            selectedValue={this.state.cta}
-            style={styles.pickerStyle}
-            onValueChange={itemValue => this.setState({ cta: itemValue })}
-          >
-            <Picker.Item label="CCGalicia" value="CCGalicia" />
-            <Picker.Item label="CCBBVA" value="CCBBVA" />
-            <Picker.Item label="Verdes" value="Verdes" />
-          </Picker>
-        </View>
-
-        <View style={styles.pickerViewStyle}>
-          <Text style={styles.text}>Motivo</Text>
-          <Picker
-            selectedValue={this.state.motivo}
-            style={styles.pickerStyle}
-            onValueChange={itemValue => this.setState({ motivo: itemValue })}
-          >
-            <Picker.Item label="Nafta" value="Nafta" />
-            <Picker.Item label="Joda" value="Joda" />
-            <Picker.Item label="Super" value="Super" />
-          </Picker>
-        </View>
-        <View style={{ flexDirection: "row" }}>
-          <Text style={styles.montoStyle}>Detalle:</Text>
-
-          <TextInput
-            style={{
-              flex: 1,
-              fontSize: 25,
-              backgroundColor: "white"
-            }}
-            value={this.state.detalle}
-            onChangeText={text => {
-              this.setState({ detalle: text });
+              this.setState({ monto: nuevoMonto }, () => {});
             }}
           />
-        </View>
-        <Button
-          style={styles.btStyle}
-          title="guarda"
-          onPress={() => {
-            let fecha = new Date();
-            let lat = findCoordinates();
+          <View style={{ flexDirection: "row" }}>
+            <Text style={styles.montoStyle}>$</Text>
 
-            this.findCoordinates;
-            monto = 0;
-            this.setState({ fecha: fecha, modalVisible: true });
-          }}
-        />
+            <TextInput
+              style={{
+                flex: 1,
+                fontSize: 25,
+                backgroundColor: "white"
+              }}
+              value={montoString}
+              onChangeText={text => {
+                this.setState({ monto: text });
+              }}
+            />
+          </View>
+          {/* <Text>{text}</Text> */}
 
-        <Modal
-          animationType="slide"
-          transparent={false}
-          visible={this.state.modalVisible}
-          onRequestClose={() => {
-            Alert.alert("Modal has been closed.");
-          }}
-        >
-          <View style={{ marginTop: 22 }}>
-            <View>
-              <Text style={{ fontSize: 20 }}>{text}</Text>
-              <View
-                style={{
-                  backgroundColor: "lightgreen",
-                  padding: 10,
-                  flexDirection: "row"
-                }}
-              >
-                <TouchableHighlight
-                  style={styles.modBtStyle}
-                  onPress={() => {
-                    this.setState({
-                      modalVisible: false,
-                      monto: parseInt(this.state.monto)
-                    });
+          <View style={styles.pickerViewStyle}>
+            <Text style={styles.text}>Cuenta origen</Text>
+            <Picker
+              selectedValue={this.state.cta}
+              style={styles.pickerStyle}
+              onValueChange={itemValue => this.setState({ cta: itemValue })}
+            >
+              <Picker.Item label="CCGalicia" value="CCGalicia" />
+              <Picker.Item label="CCBBVA" value="CCBBVA" />
+              <Picker.Item label="Verdes" value="Verdes" />
+            </Picker>
+          </View>
+
+          <View style={styles.pickerViewStyle}>
+            <Text style={styles.text}>Motivo</Text>
+            <Picker
+              selectedValue={this.state.motivo}
+              style={styles.pickerStyle}
+              onValueChange={itemValue => this.setState({ motivo: itemValue })}
+            >
+              <Picker.Item label="Nafta" value="Nafta" />
+              <Picker.Item label="Joda" value="Joda" />
+              <Picker.Item label="Super" value="Super" />
+            </Picker>
+          </View>
+          <View style={{ flexDirection: "row" }}>
+            <Text style={styles.montoStyle}>Detalle:</Text>
+
+            <TextInput
+              style={{
+                flex: 1,
+                fontSize: 25,
+                backgroundColor: "white"
+              }}
+              value={this.state.detalle}
+              onChangeText={text => {
+                this.setState({ detalle: text });
+              }}
+            />
+          </View>
+          <Button
+            style={styles.btStyle}
+            title="guarda"
+            onPress={() => {
+              let fecha = new Date();
+              let lat = findCoordinates();
+
+              this.findCoordinates;
+              monto = 0;
+              this.setState({ fecha: fecha, modalVisible: true });
+            }}
+          />
+          <Modal
+            animationType="slide"
+            transparent={false}
+            visible={this.state.modalVisible}
+            onRequestClose={() => {
+              Alert.alert("Modal has been closed.");
+            }}
+          >
+            <View style={{ marginTop: 22 }}>
+              <View>
+                <Text style={{ fontSize: 20 }}>{text}</Text>
+                <View
+                  style={{
+                    backgroundColor: "lightgreen",
+                    padding: 10,
+                    flexDirection: "row"
                   }}
                 >
-                  <Text style={{ alignSelf: "center" }}>Dale</Text>
-                </TouchableHighlight>
+                  <TouchableHighlight
+                    style={styles.modBtStyle}
+                    onPress={this.guardarOp.bind(this)}
+                  >
+                    <Text style={{ alignSelf: "center" }}>Dale</Text>
+                  </TouchableHighlight>
 
-                <TouchableHighlight
-                  style={styles.modBtStyle}
-                  onPress={() => {
-                    this.setState({ modalVisible: false });
-                  }}
-                >
-                  <Text style={{ alignSelf: "center" }}>NO!</Text>
-                </TouchableHighlight>
+                  <TouchableHighlight
+                    style={styles.modBtStyle}
+                    onPress={() => {
+                      this.setState({ modalVisible: false });
+                    }}
+                  >
+                    <Text style={{ alignSelf: "center" }}>NO!</Text>
+                  </TouchableHighlight>
+                </View>
               </View>
             </View>
+          </Modal>
+          <View style={{ backgroundColor: "lightyellow", height: 333 }}>
+            <Button title="Logout" onPress={() => this.props.logout()} />
           </View>
-        </Modal>
-        <View style={{ height: 60 }} />
-      </KeyboardAvoidingView>
+        </View>
+      </ScrollView>
     );
   }
 }

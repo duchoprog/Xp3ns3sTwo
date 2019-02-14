@@ -25,12 +25,22 @@ class App extends Component {
       }
     });
   }
-
+  logout() {
+    firebase
+      .auth()
+      .signOut()
+      .then(function() {
+        this.setState({ loggedIn: false });
+      })
+      .catch(function(error) {
+        // An error happened
+      });
+  }
   renderApp() {
     if (this.state.loggedIn) {
       return (
         <View style={styles.opsStyle}>
-          <Ops />
+          <Ops logout={this.logout.bind(this)} />
         </View>
       );
     } else {
@@ -46,7 +56,7 @@ class App extends Component {
     return (
       <View style={styles.viewStyle}>
         <View style={styles.titleStyle}>
-          <Text>XP3NS3S</Text>
+          <Text>XP3NS3S!</Text>
         </View>
         <View style={{ flex: 1 }}>{this.renderApp()}</View>
       </View>
@@ -69,7 +79,7 @@ styles = {
   },
   opsStyle: {
     padding: 10,
-    flex: 5,
+    flex: 1,
     borderTopWidth: 1,
     borderColor: "#000000"
   }
