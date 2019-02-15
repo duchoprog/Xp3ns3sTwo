@@ -62,7 +62,8 @@ const styles = {
   inputStyle: {
     backgroundColor: "#ffe",
     margin: 2,
-    borderWidth: 1
+    borderWidth: 1,
+    fontSize: 25
   },
   viewStyle: {
     backgroundColor: "#ffe",

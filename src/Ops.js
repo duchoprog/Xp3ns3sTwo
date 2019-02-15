@@ -83,7 +83,7 @@ class Ops extends Component {
         <View style={{ flex: 1 }}>
           <Button
             style={styles.btStyle}
-            title=" sumar 1402"
+            title=" sumar 1000 (15/2)"
             onPress={() => {
               nuevoMonto = (parseInt(this.state.monto) + 1000).toString();
 
@@ -123,6 +123,7 @@ class Ops extends Component {
               selectedValue={this.state.cta}
               style={styles.pickerStyle}
               onValueChange={itemValue => this.setState({ cta: itemValue })}
+              itemStyle={{ height: 22 }}
             >
               <Picker.Item label="CCGalicia" value="CCGalicia" />
               <Picker.Item label="CCBBVA" value="CCBBVA" />
@@ -219,6 +220,7 @@ const styles = {
     margin: 10
   },
   pickerViewStyle: {
+    height: 44,
     margin: 5,
     flexDirection: "row",
     borderWidth: 1,
