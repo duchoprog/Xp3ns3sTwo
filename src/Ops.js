@@ -28,18 +28,28 @@ class Ops extends Component {
     };
   }
 
-  componentDidMount() {
+  componentWillMount() {
     this.leerOrigenDestino();
   }
 
   leerOrigenDestino() {
+    var origenes = {};
+    var destinos = {};
     const { currentUser } = firebase.auth();
     firebase
       .database()
       .ref(`/${currentUser.uid}/origenes`)
-      .on("value", function(snapshot) {
-        const origenes = snapshot.val();
+      .on("value", snapshot => {
+        origenes = snapshot.val();
         console.warn(origenes);
+      });
+
+    firebase
+      .database()
+      .ref(`/${currentUser.uid}/destinos`)
+      .on("value", snapshot => {
+        destinos = snapshot.val();
+        console.warn(destinos);
       });
   }
   iosOrigen() {}

@@ -36,6 +36,7 @@ class App extends Component {
         // An error happened
       });
   }
+
   renderApp() {
     if (this.state.loggedIn) {
       return (
@@ -53,11 +54,13 @@ class App extends Component {
   }
 
   render() {
+    const miUrl = "https://xp3ns3s.firebaseio.com";
     return (
       <View style={styles.viewStyle}>
         <View style={styles.titleStyle}>
-          <Text>XP3NS3S!</Text>
+          <Text>XP3NS3S! </Text>
         </View>
+
         <View style={{ flex: 1 }}>{this.renderApp()}</View>
       </View>
     );
