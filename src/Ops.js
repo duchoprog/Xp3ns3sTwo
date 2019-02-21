@@ -6,15 +6,16 @@ import {
   Button,
   Picker,
   TextInput,
-  Modal,
   ScrollView,
   TouchableHighlight,
   Platform
 } from "react-native";
+import Modal from "react-native-modal";
 
 class Ops extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
       monto: 0,
       cta: "",
@@ -24,37 +25,43 @@ class Ops extends Component {
       motivo: "",
       detalle: "",
       modalVisible: false,
-      posi: ""
+      posi: "",
+      origenes: {},
+      destinos: {},
+      pickerOriVisible: false,
+      pickerDesVisible: false
     };
   }
 
   componentWillMount() {
-    this.leerOrigenDestino();
+    this.leerOrigenes();
   }
 
-  leerOrigenDestino() {
+  leerOrigenes() {
     var origenes = {};
-    var destinos = {};
+
     const { currentUser } = firebase.auth();
     firebase
       .database()
       .ref(`/${currentUser.uid}/origenes`)
       .on("value", snapshot => {
         origenes = snapshot.val();
-        console.warn(origenes);
-      });
-
-    firebase
-      .database()
-      .ref(`/${currentUser.uid}/destinos`)
-      .on("value", snapshot => {
-        destinos = snapshot.val();
-        console.warn(destinos);
+        Object.keys(origenes).map(function(key) {
+          console.warn(origenes);
+        });
       });
   }
-  iosOrigen() {}
+  iosOrigen() {
+    this.setState({
+      pickerOriVisible: true
+    });
+  }
 
-  iosDestino() {}
+  iosDestino() {
+    this.setState({
+      pickerDesVisible: true
+    });
+  }
   guardarOp() {
     this.setState({
       modalVisible: false,
@@ -78,21 +85,26 @@ class Ops extends Component {
   }
 
   renderPicker() {
-    if (Platform.OS !== "ios") {
+    if (Platform.OS === "ios") {
       return (
         <View>
-          <TouchableHighlight>
-            <Text style={styles.iosPickerStyle}>Origen</Text>
-          </TouchableHighlight>
-          <TouchableHighlight>
-            <Text style={styles.iosPickerStyle}>Destino</Text>
-          </TouchableHighlight>
+          <View style={styles.iosPickerStyle}>
+            <Button title="Origen" onPress={this.iosOrigen.bind(this)} />
+          </View>
+          <View style={styles.iosPickerStyle}>
+            <Button
+              style={styles.iosPickerStyle}
+              title="Destino"
+              onPress={this.iosDestino.bind(this)}
+            />
+          </View>
         </View>
       );
     } else {
       return (
         <View>
           <View style={styles.pickerViewStyle}>
+            <Text />
             <Text style={styles.text}>Cuenta origen</Text>
             <Picker
               selectedValue={this.state.cta}
@@ -122,6 +134,7 @@ class Ops extends Component {
     }
   }
   render() {
+    console.warn(this.state.origenes);
     const ahora = new Date();
     const montoString = `${this.state.monto.toString()}`;
     const position = `https://www.google.com/maps/place/ ${this.state.lat},${
@@ -163,7 +176,7 @@ class Ops extends Component {
         <View style={{ flex: 1 }}>
           <Button
             style={styles.btStyle}
-            title=" sumar 1000 (18/2b)"
+            title=" sumar 1000 (21/2b)"
             onPress={() => {
               nuevoMonto = (parseInt(this.state.monto) + 1000).toString();
 
@@ -226,9 +239,7 @@ class Ops extends Component {
               this.setState({ fecha: fecha, modalVisible: true });
             }}
           />
-          <View>
-            <Text>{JSON.stringify(this.leerOrigenDestino())}</Text>
-          </View>
+
           <Modal
             animationType="slide"
             transparent={false}
@@ -266,7 +277,67 @@ class Ops extends Component {
               </View>
             </View>
           </Modal>
-          <View style={{ backgroundColor: "lightyellow", height: 333 }}>
+          <Modal
+            backdropColor="black"
+            backdropOpacity="1"
+            animationType="slide"
+            transparent={false}
+            visible={this.state.pickerOriVisible}
+            onRequestClose={() => {
+              Alert.alert("Modal has been closed.");
+            }}
+          >
+            <View>
+              <View style={styles.pickerViewStyle}>
+                <Text />
+                <Text style={styles.text}>Cuenta origen</Text>
+                <Picker
+                  selectedValue={this.state.cta}
+                  style={styles.pickerStyle}
+                  onValueChange={itemValue =>
+                    this.setState({ cta: itemValue, pickerOriVisible: false })
+                  }
+                  itemStyle={{ height: 22 }}
+                >
+                  <Picker.Item label="CCGalicia!" value="CCGalicia" />
+                  <Picker.Item label="CCBBVA" value="CCBBVA" />
+                  <Picker.Item label="Verdes" value="Verdes" />
+                </Picker>
+              </View>
+            </View>
+          </Modal>
+
+          <Modal
+            backdropColor="black"
+            backdropOpacity="1"
+            animationType="slide"
+            transparent={false}
+            visible={this.state.pickerDesVisible}
+            onRequestClose={() => {
+              Alert.alert("Modal has been closed.");
+            }}
+          >
+            <View>
+              <View style={styles.pickerViewStyle}>
+                <Text />
+                <Text style={styles.text}>Cuenta destino</Text>
+                <Picker
+                  selectedValue={this.state.cta}
+                  style={styles.pickerStyle}
+                  onValueChange={itemValue =>
+                    this.setState({ cta: itemValue, pickerDesVisible: false })
+                  }
+                  itemStyle={{ height: 22 }}
+                >
+                  <Picker.Item label="Nafta!" value="Nafta" />
+                  <Picker.Item label="Joda" value="Joda" />
+                  <Picker.Item label="Super" value="Super" />
+                </Picker>
+              </View>
+            </View>
+          </Modal>
+
+          <View style={{ height: 333, marginTop: 20 }}>
             <Button title="Logout" onPress={() => this.props.logout()} />
           </View>
         </View>
@@ -279,9 +350,6 @@ const styles = {
     margin: 10
   },
   iosPickerStyle: {
-    fontSize: 25,
-    borderWidth: 1,
-    borderColor: "black",
     margin: 2
   },
   pickerViewStyle: {
