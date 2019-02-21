@@ -85,7 +85,7 @@ class Ops extends Component {
   }
 
   renderPicker() {
-    if (Platform.OS === "ios") {
+    if (Platform.OS !== "ios") {
       return (
         <View>
           <View style={styles.iosPickerStyle}>
@@ -112,6 +112,7 @@ class Ops extends Component {
               onValueChange={itemValue => this.setState({ cta: itemValue })}
               itemStyle={{ height: 22 }}
             >
+              <Picker.Item label="Elegi!" value="Elegi" />
               <Picker.Item label="CCGalicia!" value="CCGalicia" />
               <Picker.Item label="CCBBVA" value="CCBBVA" />
               <Picker.Item label="Verdes" value="Verdes" />
@@ -124,6 +125,7 @@ class Ops extends Component {
               style={styles.pickerStyle}
               onValueChange={itemValue => this.setState({ motivo: itemValue })}
             >
+              <Picker.Item label="Elegi!" value="Elegi" />
               <Picker.Item label="Nafta!" value="Nafta" />
               <Picker.Item label="Joda" value="Joda" />
               <Picker.Item label="Super" value="Super" />
@@ -299,6 +301,7 @@ class Ops extends Component {
                   }
                   itemStyle={{ height: 22 }}
                 >
+                  <Picker.Item label="Elegi!" value="Elegi" />
                   <Picker.Item label="CCGalicia!" value="CCGalicia" />
                   <Picker.Item label="CCBBVA" value="CCBBVA" />
                   <Picker.Item label="Verdes" value="Verdes" />
@@ -322,13 +325,17 @@ class Ops extends Component {
                 <Text />
                 <Text style={styles.text}>Cuenta destino</Text>
                 <Picker
-                  selectedValue={this.state.cta}
+                  selectedValue={this.state.motivo}
                   style={styles.pickerStyle}
                   onValueChange={itemValue =>
-                    this.setState({ cta: itemValue, pickerDesVisible: false })
+                    this.setState({
+                      motivo: itemValue,
+                      pickerDesVisible: false
+                    })
                   }
                   itemStyle={{ height: 22 }}
                 >
+                  <Picker.Item label="Elegi!" value="Elegi" />
                   <Picker.Item label="Nafta!" value="Nafta" />
                   <Picker.Item label="Joda" value="Joda" />
                   <Picker.Item label="Super" value="Super" />
