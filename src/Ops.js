@@ -1,32 +1,142 @@
 import React, { Component } from "react";
+import firebase from "firebase";
 import {
   View,
   Text,
   Button,
   Picker,
   TextInput,
-  Modal,
+  ScrollView,
   TouchableHighlight,
-  KeyboardAvoidingView
+  Platform
 } from "react-native";
+import Modal from "react-native-modal";
 
 class Ops extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
       monto: 0,
-      cta: "default",
+      cta: "",
       fecha: "",
       lat: 12,
       long: 21,
-      cta: "default",
-      motivo: "Super",
+      motivo: "",
       detalle: "",
-      modalVisible: false
+      modalVisible: false,
+      posi: "",
+      origenes: {},
+      destinos: {},
+      pickerOriVisible: false,
+      pickerDesVisible: false
     };
   }
 
+  componentWillMount() {
+    this.leerOrigenes();
+  }
+
+  leerOrigenes() {
+    var origenes = {};
+
+    const { currentUser } = firebase.auth();
+    firebase
+      .database()
+      .ref(`/${currentUser.uid}/origenes`)
+      .on("value", snapshot => {
+        origenes = snapshot.val();
+        Object.keys(origenes).map(function(key) {
+          console.warn(origenes);
+        });
+      });
+  }
+  iosOrigen() {
+    this.setState({
+      pickerOriVisible: true
+    });
+  }
+
+  iosDestino() {
+    this.setState({
+      pickerDesVisible: true
+    });
+  }
+  guardarOp() {
+    this.setState({
+      modalVisible: false,
+      monto: parseInt(this.state.monto)
+    });
+
+    const { monto, cta, fecha, motivo, detalle, posi } = this.state;
+    //console.warn(monto, cta, fecha, motivo);
+    const { currentUser } = firebase.auth();
+    firebase
+      .database()
+      .ref(`/${currentUser.uid}/ops`)
+      .push({ monto, cta, fecha, motivo, detalle, posi });
+    this.setState({
+      monto: "",
+      cta: "",
+      fecha: "",
+      motivo: "",
+      detalle: ""
+    });
+  }
+
+  renderPicker() {
+    if (Platform.OS !== "ios") {
+      return (
+        <View>
+          <View style={styles.iosPickerStyle}>
+            <Button title="Origen" onPress={this.iosOrigen.bind(this)} />
+          </View>
+          <View style={styles.iosPickerStyle}>
+            <Button
+              style={styles.iosPickerStyle}
+              title="Destino"
+              onPress={this.iosDestino.bind(this)}
+            />
+          </View>
+        </View>
+      );
+    } else {
+      return (
+        <View>
+          <View style={styles.pickerViewStyle}>
+            <Text />
+            <Text style={styles.text}>Cuenta origen</Text>
+            <Picker
+              selectedValue={this.state.cta}
+              style={styles.pickerStyle}
+              onValueChange={itemValue => this.setState({ cta: itemValue })}
+              itemStyle={{ height: 22 }}
+            >
+              <Picker.Item label="Elegi!" value="Elegi" />
+              <Picker.Item label="CCGalicia!" value="CCGalicia" />
+              <Picker.Item label="CCBBVA" value="CCBBVA" />
+              <Picker.Item label="Verdes" value="Verdes" />
+            </Picker>
+          </View>
+          <View style={styles.pickerViewStyle}>
+            <Text style={styles.text}>Motivo</Text>
+            <Picker
+              selectedValue={this.state.motivo}
+              style={styles.pickerStyle}
+              onValueChange={itemValue => this.setState({ motivo: itemValue })}
+            >
+              <Picker.Item label="Elegi!" value="Elegi" />
+              <Picker.Item label="Nafta!" value="Nafta" />
+              <Picker.Item label="Joda" value="Joda" />
+              <Picker.Item label="Super" value="Super" />
+            </Picker>
+          </View>
+        </View>
+      );
+    }
+  }
   render() {
+    console.warn(this.state.origenes);
     const ahora = new Date();
     const montoString = `${this.state.monto.toString()}`;
     const position = `https://www.google.com/maps/place/ ${this.state.lat},${
@@ -56,6 +166,7 @@ class Ops extends Component {
           var position = `https://www.google.com/maps/place/ ${
             this.state.lat
           },${this.state.long}`;
+          this.setState({ posi: position });
         },
         error => Alert.alert(error.message),
         { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
@@ -63,17 +174,11 @@ class Ops extends Component {
     };
 
     return (
-      <ScrollView>
-        <View
-          style={{
-            flex: 1,
-            borderColor: "#F00",
-            borderWidth: 2
-          }}
-        >
+      <ScrollView style={{ flex: 1 }} behavior="padding" enabled>
+        <View style={{ flex: 1 }}>
           <Button
             style={styles.btStyle}
-            title=" sumar 1000"
+            title=" sumar 1000 (21/2b)"
             onPress={() => {
               nuevoMonto = (parseInt(this.state.monto) + 1000).toString();
 
@@ -107,31 +212,8 @@ class Ops extends Component {
           </View>
           {/* <Text>{text}</Text> */}
 
-          <View style={styles.pickerViewStyle}>
-            <Text style={styles.text}>Cuenta origen</Text>
-            <Picker
-              selectedValue={this.state.cta}
-              style={styles.pickerStyle}
-              onValueChange={itemValue => this.setState({ cta: itemValue })}
-            >
-              <Picker.Item label="CCGalicia" value="CCGalicia" />
-              <Picker.Item label="CCBBVA" value="CCBBVA" />
-              <Picker.Item label="Verdes" value="Verdes" />
-            </Picker>
-          </View>
+          <View>{this.renderPicker()}</View>
 
-          <View style={styles.pickerViewStyle}>
-            <Text style={styles.text}>Motivo</Text>
-            <Picker
-              selectedValue={this.state.motivo}
-              style={styles.pickerStyle}
-              onValueChange={itemValue => this.setState({ motivo: itemValue })}
-            >
-              <Picker.Item label="Nafta" value="Nafta" />
-              <Picker.Item label="Joda" value="Joda" />
-              <Picker.Item label="Super" value="Super" />
-            </Picker>
-          </View>
           <View style={{ flexDirection: "row" }}>
             <Text style={styles.montoStyle}>Detalle:</Text>
 
@@ -149,7 +231,7 @@ class Ops extends Component {
           </View>
           <Button
             style={styles.btStyle}
-            title="guardando!"
+            title="guarda"
             onPress={() => {
               let fecha = new Date();
               let lat = findCoordinates();
@@ -180,12 +262,7 @@ class Ops extends Component {
                 >
                   <TouchableHighlight
                     style={styles.modBtStyle}
-                    onPress={() => {
-                      this.setState({
-                        modalVisible: false,
-                        monto: parseInt(this.state.monto)
-                      });
-                    }}
+                    onPress={this.guardarOp.bind(this)}
                   >
                     <Text style={{ alignSelf: "center" }}>Dale</Text>
                   </TouchableHighlight>
@@ -202,7 +279,74 @@ class Ops extends Component {
               </View>
             </View>
           </Modal>
-          <View style={{ height: 60 }} />
+          <Modal
+            backdropColor="black"
+            backdropOpacity="1"
+            animationType="slide"
+            transparent={false}
+            visible={this.state.pickerOriVisible}
+            onRequestClose={() => {
+              Alert.alert("Modal has been closed.");
+            }}
+          >
+            <View>
+              <View style={styles.pickerViewStyle}>
+                <Text />
+                <Text style={styles.text}>Cuenta origen</Text>
+                <Picker
+                  selectedValue={this.state.cta}
+                  style={styles.pickerStyle}
+                  onValueChange={itemValue =>
+                    this.setState({ cta: itemValue, pickerOriVisible: false })
+                  }
+                  itemStyle={{ height: 22 }}
+                >
+                  <Picker.Item label="Elegi!" value="Elegi" />
+                  <Picker.Item label="CCGalicia!" value="CCGalicia" />
+                  <Picker.Item label="CCBBVA" value="CCBBVA" />
+                  <Picker.Item label="Verdes" value="Verdes" />
+                </Picker>
+              </View>
+            </View>
+          </Modal>
+
+          <Modal
+            backdropColor="black"
+            backdropOpacity="1"
+            animationType="slide"
+            transparent={false}
+            visible={this.state.pickerDesVisible}
+            onRequestClose={() => {
+              Alert.alert("Modal has been closed.");
+            }}
+          >
+            <View>
+              <View style={styles.pickerViewStyle}>
+                <Text />
+                <Text style={styles.text}>Cuenta destino</Text>
+                <Picker
+                  selectedValue={this.state.motivo}
+                  style={styles.pickerStyle}
+                  onValueChange={itemValue =>
+                    this.setState({
+                      motivo: itemValue,
+                      pickerDesVisible: false
+                    })
+                  }
+                  itemStyle={{ height: 22 }}
+                >
+                  <Picker.Item label="Elegi!" value="Elegi" />
+                  <Picker.Item label="Nafta!" value="Nafta" />
+                  <Picker.Item label="Joda" value="Joda" />
+                  <Picker.Item label="Super" value="Super" />
+                </Picker>
+              </View>
+            </View>
+          </Modal>
+
+          <View style={{ height: 333, marginTop: 20 }}>
+            <Button title="Logout" onPress={() => this.props.logout()} />
+          </View>
         </View>
       </ScrollView>
     );
@@ -212,7 +356,11 @@ const styles = {
   btStyle: {
     margin: 10
   },
+  iosPickerStyle: {
+    margin: 2
+  },
   pickerViewStyle: {
+    height: 44,
     margin: 5,
     flexDirection: "row",
     borderWidth: 1,

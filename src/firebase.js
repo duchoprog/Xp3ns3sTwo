@@ -45,4 +45,15 @@ class firebase {
 firebase.shared = new firebase();
 
 export default firebase;
+
+firebase.auth().signOut()
+  .then(function() {
+    // Sign-out successful.
+  })
+  .catch(function(error) {
+    // An error happened
+  });
+
+
+
  */

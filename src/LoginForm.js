@@ -1,12 +1,5 @@
 import React, { Component } from "react";
-import {
-  View,
-  TextInput,
-  Button,
-  Text,
-  ActivityIndicator,
-  ScrollView
-} from "react-native";
+import { View, TextInput, Button, Text, ActivityIndicator } from "react-native";
 import firebase from "@firebase/app";
 class LoginForm extends Component {
   state = {
@@ -45,33 +38,23 @@ class LoginForm extends Component {
 
   render() {
     return (
-      <ScrollView>
-        <View
-          style={{
-            flex: 1,
-            borderColor: "#F00",
-            borderWidth: 2
-          }}
-        >
-          <View style={styles.viewStyle}>
-            <TextInput
-              placeholder="mail"
-              value={this.state.mail}
-              style={styles.inputStyle}
-              onChangeText={mail => this.setState({ mail: mail, error: "" })}
-            />
-            <TextInput
-              placeholder="pass"
-              style={styles.inputStyle}
-              value={this.state.pass}
-              style={styles.inputStyle}
-              onChangeText={pass => this.setState({ pass: pass, error: "" })}
-            />
-            <View>{this.renderButton()}</View>
-            <Text style={styles.errorStyle}>{this.state.error}</Text>
-          </View>
-        </View>
-      </ScrollView>
+      <View style={styles.viewStyle}>
+        <TextInput
+          placeholder="mail"
+          value={this.state.mail}
+          style={styles.inputStyle}
+          onChangeText={mail => this.setState({ mail: mail, error: "" })}
+        />
+        <TextInput
+          placeholder="pass"
+          style={styles.inputStyle}
+          value={this.state.pass}
+          style={styles.inputStyle}
+          onChangeText={pass => this.setState({ pass: pass, error: "" })}
+        />
+        <View>{this.renderButton()}</View>
+        <Text style={styles.errorStyle}>{this.state.error}</Text>
+      </View>
     );
   }
 }
@@ -79,7 +62,8 @@ const styles = {
   inputStyle: {
     backgroundColor: "#ffe",
     margin: 2,
-    borderWidth: 1
+    borderWidth: 1,
+    fontSize: 25
   },
   viewStyle: {
     backgroundColor: "#ffe",
