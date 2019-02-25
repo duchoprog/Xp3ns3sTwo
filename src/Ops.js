@@ -63,140 +63,148 @@ class Ops extends Component {
     };
 
     return (
-      <KeyboardAvoidingView behavior="padding">
-        <Button
-          style={styles.btStyle}
-          title=" sumar 1000"
-          onPress={() => {
-            nuevoMonto = (parseInt(this.state.monto) + 1000).toString();
-
-            this.setState({ monto: nuevoMonto }, () => {});
-          }}
-        />
-        <View style={{ topBorder: 2, height: 2 }} />
-        <Button
-          style={styles.btStyle}
-          title=" sumar 100"
-          onPress={() => {
-            nuevoMonto = (parseInt(this.state.monto) + 100).toString();
-
-            this.setState({ monto: nuevoMonto }, () => {});
-          }}
-        />
-        <View style={{ flexDirection: "row" }}>
-          <Text style={styles.montoStyle}>$</Text>
-
-          <TextInput
-            style={{
-              flex: 1,
-              fontSize: 25,
-              backgroundColor: "white"
-            }}
-            value={montoString}
-            onChangeText={text => {
-              this.setState({ monto: text });
-            }}
-          />
-        </View>
-        {/* <Text>{text}</Text> */}
-
-        <View style={styles.pickerViewStyle}>
-          <Text style={styles.text}>Cuenta origen</Text>
-          <Picker
-            selectedValue={this.state.cta}
-            style={styles.pickerStyle}
-            onValueChange={itemValue => this.setState({ cta: itemValue })}
-          >
-            <Picker.Item label="CCGalicia" value="CCGalicia" />
-            <Picker.Item label="CCBBVA" value="CCBBVA" />
-            <Picker.Item label="Verdes" value="Verdes" />
-          </Picker>
-        </View>
-
-        <View style={styles.pickerViewStyle}>
-          <Text style={styles.text}>Motivo</Text>
-          <Picker
-            selectedValue={this.state.motivo}
-            style={styles.pickerStyle}
-            onValueChange={itemValue => this.setState({ motivo: itemValue })}
-          >
-            <Picker.Item label="Nafta" value="Nafta" />
-            <Picker.Item label="Joda" value="Joda" />
-            <Picker.Item label="Super" value="Super" />
-          </Picker>
-        </View>
-        <View style={{ flexDirection: "row" }}>
-          <Text style={styles.montoStyle}>Detalle:</Text>
-
-          <TextInput
-            style={{
-              flex: 1,
-              fontSize: 25,
-              backgroundColor: "white"
-            }}
-            value={this.state.detalle}
-            onChangeText={text => {
-              this.setState({ detalle: text });
-            }}
-          />
-        </View>
-        <Button
-          style={styles.btStyle}
-          title="guarda"
-          onPress={() => {
-            let fecha = new Date();
-            let lat = findCoordinates();
-
-            this.findCoordinates;
-            monto = 0;
-            this.setState({ fecha: fecha, modalVisible: true });
-          }}
-        />
-
-        <Modal
-          animationType="slide"
-          transparent={false}
-          visible={this.state.modalVisible}
-          onRequestClose={() => {
-            Alert.alert("Modal has been closed.");
+      <ScrollView>
+        <View
+          style={{
+            flex: 1,
+            borderColor: "#F00",
+            borderWidth: 2
           }}
         >
-          <View style={{ marginTop: 22 }}>
-            <View>
-              <Text style={{ fontSize: 20 }}>{text}</Text>
-              <View
-                style={{
-                  backgroundColor: "lightgreen",
-                  padding: 10,
-                  flexDirection: "row"
-                }}
-              >
-                <TouchableHighlight
-                  style={styles.modBtStyle}
-                  onPress={() => {
-                    this.setState({
-                      modalVisible: false,
-                      monto: parseInt(this.state.monto)
-                    });
-                  }}
-                >
-                  <Text style={{ alignSelf: "center" }}>Dale</Text>
-                </TouchableHighlight>
+          <Button
+            style={styles.btStyle}
+            title=" sumar 1000"
+            onPress={() => {
+              nuevoMonto = (parseInt(this.state.monto) + 1000).toString();
 
-                <TouchableHighlight
-                  style={styles.modBtStyle}
-                  onPress={() => {
-                    this.setState({ modalVisible: false });
+              this.setState({ monto: nuevoMonto }, () => {});
+            }}
+          />
+          <View style={{ topBorder: 2, height: 2 }} />
+          <Button
+            style={styles.btStyle}
+            title=" sumar 100"
+            onPress={() => {
+              nuevoMonto = (parseInt(this.state.monto) + 100).toString();
+
+              this.setState({ monto: nuevoMonto }, () => {});
+            }}
+          />
+          <View style={{ flexDirection: "row" }}>
+            <Text style={styles.montoStyle}>$</Text>
+
+            <TextInput
+              style={{
+                flex: 1,
+                fontSize: 25,
+                backgroundColor: "white"
+              }}
+              value={montoString}
+              onChangeText={text => {
+                this.setState({ monto: text });
+              }}
+            />
+          </View>
+          {/* <Text>{text}</Text> */}
+
+          <View style={styles.pickerViewStyle}>
+            <Text style={styles.text}>Cuenta origen</Text>
+            <Picker
+              selectedValue={this.state.cta}
+              style={styles.pickerStyle}
+              onValueChange={itemValue => this.setState({ cta: itemValue })}
+            >
+              <Picker.Item label="CCGalicia" value="CCGalicia" />
+              <Picker.Item label="CCBBVA" value="CCBBVA" />
+              <Picker.Item label="Verdes" value="Verdes" />
+            </Picker>
+          </View>
+
+          <View style={styles.pickerViewStyle}>
+            <Text style={styles.text}>Motivo</Text>
+            <Picker
+              selectedValue={this.state.motivo}
+              style={styles.pickerStyle}
+              onValueChange={itemValue => this.setState({ motivo: itemValue })}
+            >
+              <Picker.Item label="Nafta" value="Nafta" />
+              <Picker.Item label="Joda" value="Joda" />
+              <Picker.Item label="Super" value="Super" />
+            </Picker>
+          </View>
+          <View style={{ flexDirection: "row" }}>
+            <Text style={styles.montoStyle}>Detalle:</Text>
+
+            <TextInput
+              style={{
+                flex: 1,
+                fontSize: 25,
+                backgroundColor: "white"
+              }}
+              value={this.state.detalle}
+              onChangeText={text => {
+                this.setState({ detalle: text });
+              }}
+            />
+          </View>
+          <Button
+            style={styles.btStyle}
+            title="guardando!"
+            onPress={() => {
+              let fecha = new Date();
+              let lat = findCoordinates();
+
+              this.findCoordinates;
+              monto = 0;
+              this.setState({ fecha: fecha, modalVisible: true });
+            }}
+          />
+
+          <Modal
+            animationType="slide"
+            transparent={false}
+            visible={this.state.modalVisible}
+            onRequestClose={() => {
+              Alert.alert("Modal has been closed.");
+            }}
+          >
+            <View style={{ marginTop: 22 }}>
+              <View>
+                <Text style={{ fontSize: 20 }}>{text}</Text>
+                <View
+                  style={{
+                    backgroundColor: "lightgreen",
+                    padding: 10,
+                    flexDirection: "row"
                   }}
                 >
-                  <Text style={{ alignSelf: "center" }}>NO!</Text>
-                </TouchableHighlight>
+                  <TouchableHighlight
+                    style={styles.modBtStyle}
+                    onPress={() => {
+                      this.setState({
+                        modalVisible: false,
+                        monto: parseInt(this.state.monto)
+                      });
+                    }}
+                  >
+                    <Text style={{ alignSelf: "center" }}>Dale</Text>
+                  </TouchableHighlight>
+
+                  <TouchableHighlight
+                    style={styles.modBtStyle}
+                    onPress={() => {
+                      this.setState({ modalVisible: false });
+                    }}
+                  >
+                    <Text style={{ alignSelf: "center" }}>NO!</Text>
+                  </TouchableHighlight>
+                </View>
               </View>
             </View>
-          </View>
-        </Modal>
-        <View style={{ height: 60 }} />
-      </KeyboardAvoidingView>
+          </Modal>
+          <View style={{ height: 60 }} />
+        </View>
+      </ScrollView>
     );
   }
 }
