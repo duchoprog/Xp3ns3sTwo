@@ -31,7 +31,8 @@ class Ops extends Component {
       pickerOriVisible: false,
       pickerDesVisible: false,
       nuevoVis: false,
-      mapus: {}
+      mapus: {},
+      nuevo: ""
     };
   }
 
@@ -168,8 +169,29 @@ class Ops extends Component {
               }}
             >
               <View>
+                <View>
+                  <TextInput
+                    style={{
+                      flex: 1,
+                      fontSize: 25,
+                      backgroundColor: "white",
+                      height: 20
+                    }}
+                    underlineColorAndroid="black"
+                    placeholder="¿qué agregamos?"
+                    value={22}
+                    onChangeText={text => {
+                      this.setState({ nuevo: text });
+                    }}
+                  />
+                </View>
                 <Button title="aceptar" />
-                <Button title="ni ahí" />
+                <Button
+                  title="ni ahí"
+                  onPress={() => {
+                    this.setState({ nuevo: "", nuevoVis: false });
+                  }}
+                />
               </View>
             </Modal>
           </View>
