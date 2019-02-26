@@ -30,6 +30,7 @@ class Ops extends Component {
       destinos: {},
       pickerOriVisible: false,
       pickerDesVisible: false,
+      nuevoVis: false,
       mapus: {}
     };
   }
@@ -129,25 +130,50 @@ class Ops extends Component {
               <Picker.Item label="CCBBVA" value="CCBBVA" />
               <Picker.Item label="Verdes" value="Verdes" />
             </Picker>
-            <View>
-              <Picker
-                selectedValue={this.state.cta}
-                style={styles.pickerStyle}
-                onValueChange={itemValue => this.setState({ cta: itemValue })}
-                itemStyle={{ height: 22 }}
-              >
-                {Object.keys(this.state.mapus).map((key, value) => {
-                  return (
-                    <Picker.Item
-                      label={this.state.mapus[key]}
-                      value={value}
-                      key={value}
-                    />
-                  ); //if you have a bunch of keys value pair
-                })}
-              </Picker>
-            </View>
           </View>
+
+          <View style={styles.pickerViewStyle}>
+            <Text style={styles.text}>Mapus</Text>
+            <Picker
+              selectedValue={this.state.cta}
+              style={styles.pickerStyle}
+              onValueChange={itemValue => {
+                if (itemValue == "destinos" || itemValue == "origenes") {
+                  console.warn(itemValue);
+                  this.setState({ nuevoVis: true });
+                } else {
+                  this.setState({ cta: itemValue });
+                }
+              }}
+              itemStyle={{ height: 22 }}
+            >
+              <Picker.Item label="Elegi!" value="Elegi" />
+              {Object.keys(this.state.mapus).map((key, value) => {
+                return (
+                  <Picker.Item
+                    label={this.state.mapus[key]}
+                    value={value}
+                    key={value}
+                  />
+                ); //if you have a bunch of keys value pair
+              })}
+              <Picker.Item label="Nuevo" value="destinos" />
+            </Picker>
+            <Modal
+              animationType="slide"
+              transparent={false}
+              visible={this.state.nuevoVis}
+              onRequestClose={() => {
+                Alert.alert("Modal has been closed.");
+              }}
+            >
+              <View>
+                <Button title="aceptar" />
+                <Button title="ni ahí" />
+              </View>
+            </Modal>
+          </View>
+
           <View style={styles.pickerViewStyle}>
             <Text style={styles.text}>Motivo</Text>
             <Picker
@@ -216,6 +242,7 @@ class Ops extends Component {
             }}
           />
           <View style={{ topBorder: 2, height: 2 }} />
+
           <Button
             style={styles.btStyle}
             title=" sumar 100"
