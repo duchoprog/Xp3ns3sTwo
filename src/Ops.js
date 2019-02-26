@@ -29,7 +29,8 @@ class Ops extends Component {
       origenes: {},
       destinos: {},
       pickerOriVisible: false,
-      pickerDesVisible: false
+      pickerDesVisible: false,
+      mapus: {}
     };
   }
 
@@ -39,7 +40,8 @@ class Ops extends Component {
 
   leerOrigenes() {
     var origenes = {};
-
+    var mapus = {};
+    var cont = 0;
     const { currentUser } = firebase.auth();
     firebase
       .database()
@@ -47,8 +49,12 @@ class Ops extends Component {
       .on("value", snapshot => {
         origenes = snapshot.val();
         Object.keys(origenes).map(function(key) {
-          console.warn(origenes);
+          cont += 1;
+          mapus[cont] = key;
+          //console.warn(cont, mapus);
         });
+        this.setState({ mapus: mapus });
+        console.warn(this.state.mapus);
       });
   }
   iosOrigen() {
@@ -62,6 +68,17 @@ class Ops extends Component {
       pickerDesVisible: true
     });
   }
+  resetState() {
+    console.warn("reset");
+    this.setState({
+      monto: "",
+      cta: "",
+      fecha: "",
+      motivo: "",
+      detalle: ""
+    });
+  }
+
   guardarOp() {
     this.setState({
       modalVisible: false,
@@ -75,17 +92,12 @@ class Ops extends Component {
       .database()
       .ref(`/${currentUser.uid}/ops`)
       .push({ monto, cta, fecha, motivo, detalle, posi });
-    this.setState({
-      monto: "",
-      cta: "",
-      fecha: "",
-      motivo: "",
-      detalle: ""
-    });
+
+    this.resetState();
   }
 
   renderPicker() {
-    if (Platform.OS !== "ios") {
+    if (Platform.OS === "ios") {
       return (
         <View>
           <View style={styles.iosPickerStyle}>
@@ -117,6 +129,24 @@ class Ops extends Component {
               <Picker.Item label="CCBBVA" value="CCBBVA" />
               <Picker.Item label="Verdes" value="Verdes" />
             </Picker>
+            <View>
+              <Picker
+                selectedValue={this.state.cta}
+                style={styles.pickerStyle}
+                onValueChange={itemValue => this.setState({ cta: itemValue })}
+                itemStyle={{ height: 22 }}
+              >
+                {Object.keys(this.state.mapus).map((key, value) => {
+                  return (
+                    <Picker.Item
+                      label={this.state.mapus[key]}
+                      value={value}
+                      key={value}
+                    />
+                  ); //if you have a bunch of keys value pair
+                })}
+              </Picker>
+            </View>
           </View>
           <View style={styles.pickerViewStyle}>
             <Text style={styles.text}>Motivo</Text>
@@ -136,7 +166,7 @@ class Ops extends Component {
     }
   }
   render() {
-    console.warn(this.state.origenes);
+    //console.warn(this.state.origenes);
     const ahora = new Date();
     const montoString = `${this.state.monto.toString()}`;
     const position = `https://www.google.com/maps/place/ ${this.state.lat},${
@@ -281,7 +311,6 @@ class Ops extends Component {
           </Modal>
           <Modal
             backdropColor="black"
-            backdropOpacity="1"
             animationType="slide"
             transparent={false}
             visible={this.state.pickerOriVisible}
@@ -312,7 +341,6 @@ class Ops extends Component {
 
           <Modal
             backdropColor="black"
-            backdropOpacity="1"
             animationType="slide"
             transparent={false}
             visible={this.state.pickerDesVisible}
