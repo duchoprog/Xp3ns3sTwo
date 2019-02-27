@@ -169,23 +169,15 @@ class Ops extends Component {
               }}
             >
               <View>
-                <View>
+                <View style={styles.viewStyle}>
                   <TextInput
-                    style={{
-                      flex: 1,
-                      fontSize: 25,
-                      backgroundColor: "white",
-                      height: 20
-                    }}
-                    underlineColorAndroid="black"
-                    placeholder="¿qué agregamos?"
-                    value={22}
-                    onChangeText={text => {
-                      this.setState({ nuevo: text });
-                    }}
+                    placeholder="nueva categoría"
+                    value={this.state.nuevo}
+                    style={styles.inputStyle}
+                    onChangeText={text => this.setState({ nuevo: text })}
                   />
                 </View>
-                <Button title="aceptar" />
+                <Button title="aceptar" onPress={() => {}} />
                 <Button
                   title="ni ahí"
                   onPress={() => {
@@ -430,6 +422,17 @@ class Ops extends Component {
   }
 }
 const styles = {
+  inputStyle: {
+    backgroundColor: "#ffe",
+    margin: 2,
+    borderWidth: 1,
+    fontSize: 25
+  },
+  viewStyle: {
+    backgroundColor: "#ffe",
+    padding: 10,
+    borderWidth: 1
+  },
   btStyle: {
     margin: 10
   },
